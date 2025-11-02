@@ -5,7 +5,8 @@ const getAllDrugs = async () => {
     let drugs = await prisma.drugs.findMany();
     return { success: true, data: drugs };
   } catch (error) {
-    return { success: false, error: "Failed to fetch drugs" };
+    console.error("Error fetching drugs:", error);
+    return { success: false, error: "Failed to fetch drugs", details: error.message };
   }
 };
 
