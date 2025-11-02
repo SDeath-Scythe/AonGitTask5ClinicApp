@@ -48,6 +48,34 @@ const insertDrug = async (formData) => {
   }
 };
 
+const updateDrug = async (id, formData) => {
+  try {
+    let drug = await prisma.drugs.findUnique({
+      where: { id },
+    });
+    
+    if (!drug) {
+      return { success: false, error: "Drug not found" };
+    }
+    
+    let updatedDrug = await prisma.drugs.update({
+      where: { id },
+      data: formData,
+    });
+    
+    return { 
+      success: true, 
+      message: "Drug updated successfully",
+      drug: updatedDrug 
+    };
+  } catch (error) {
+    if (error.code === 'P2002') {
+      return { success: false, error: "Drug name already exists" };
+    }
+    return { success: false, error: "Failed to update drug" };
+  }
+};
+
 const deleteDrug = async (id) => {
   try {
     let drug = await prisma.drugs.findUnique({
@@ -76,5 +104,6 @@ module.exports = {
   getAllDrugs,
   getDrugsById,
   insertDrug,
+  updateDrug,
   deleteDrug,
 };

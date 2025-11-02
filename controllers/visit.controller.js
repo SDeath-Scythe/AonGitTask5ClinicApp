@@ -62,6 +62,43 @@ const insertVisit = async (formData) => {
   }
 };
 
+const updateVisit = async (id, formData) => {
+  try {
+    let visit = await prisma.visit.findUnique({
+      where: { id },
+    });
+    
+    if (!visit) {
+      return { success: false, error: "Visit not found" };
+    }
+    
+    // If patientId is being updated, check if new patient exists
+    if (formData.patientId && formData.patientId !== visit.patientId) {
+      const patient = await prisma.patient.findUnique({
+        where: { id: formData.patientId },
+      });
+      
+      if (!patient) {
+        return { success: false, error: "Patient not found with this ID" };
+      }
+    }
+    
+    let updatedVisit = await prisma.visit.update({
+      where: { id },
+      data: formData,
+      include: { patient: true },
+    });
+    
+    return { 
+      success: true, 
+      message: "Visit updated successfully",
+      visit: updatedVisit 
+    };
+  } catch (error) {
+    return { success: false, error: "Failed to update visit" };
+  }
+};
+
 const deleteVisit = async (id) => {
   try {
     let visit = await prisma.visit.findUnique({
@@ -91,5 +128,6 @@ module.exports = {
   getAllVisits,
   getVisitById,
   insertVisit,
+  updateVisit,
   deleteVisit,
 };

@@ -3,6 +3,7 @@ const {
   getAllDrugs,
   getDrugsById,
   insertDrug,
+  updateDrug,
   deleteDrug,
 } = require("../controllers/drugs.controller");
 
@@ -31,6 +32,15 @@ router.post("/add", async (req, res) => {
     return res.status(400).json(result);
   }
   res.status(201).json(result);
+});
+
+router.put("/update/:id", async (req, res) => {
+  const body = req.body;
+  let result = await updateDrug(req.params.id, body);
+  if (!result.success) {
+    return res.status(400).json(result);
+  }
+  res.json(result);
 });
 
 router.delete("/delete/:id", async (req, res) => {

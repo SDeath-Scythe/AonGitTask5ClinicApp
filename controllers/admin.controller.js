@@ -137,6 +137,34 @@ const insertAdmin = async (formData) => {
         }
 };
 
+const updateAdmin = async (id, formData) => {
+        try {
+                let admin = await prisma.admin.findUnique({
+                        where: { id },
+                });
+                
+                if (!admin) {
+                        return { success: false, error: "Admin not found" };
+                }
+                
+                let updatedAdmin = await prisma.admin.update({
+                        where: { id },
+                        data: formData,
+                });
+                
+                return { 
+                        success: true, 
+                        message: "Admin updated successfully",
+                        admin: updatedAdmin 
+                };
+        } catch (error) {
+                if (error.code === 'P2002') {
+                        return { success: false, error: "Phone number already exists" };
+                }
+                return { success: false, error: "Failed to update admin" };
+        }
+};
+
 const deleteAdmin = async (id) => {
         try {
                 let admin = await prisma.admin.findUnique({
@@ -165,6 +193,7 @@ module.exports = {
         getAllAdmins,
         getAdminById,
         insertAdmin,
+        updateAdmin,
         deleteAdmin,
         generateOTP,
         verifyOTP,

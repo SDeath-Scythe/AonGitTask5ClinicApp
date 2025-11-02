@@ -3,6 +3,7 @@ const {
   getAllAdmins,
   getAdminById,
   insertAdmin,
+  updateAdmin,
   deleteAdmin,
   generateOTP,
   verifyOTP,
@@ -33,6 +34,15 @@ router.post("/add", async (req, res) => {
     return res.status(400).json(result);
   }
   res.status(201).json(result);
+});
+
+router.put("/update/:id", async (req, res) => {
+  const body = req.body;
+  let result = await updateAdmin(req.params.id, body);
+  if (!result.success) {
+    return res.status(400).json(result);
+  }
+  res.json(result);
 });
 
 router.delete("/delete/:id", async (req, res) => {

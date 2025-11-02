@@ -49,6 +49,34 @@ const insertPatient = async (formData) => {
   }
 };
 
+const updatePatient = async (id, formData) => {
+  try {
+    let patient = await prisma.patient.findUnique({
+      where: { id },
+    });
+    
+    if (!patient) {
+      return { success: false, error: "Patient not found" };
+    }
+    
+    let updatedPatient = await prisma.patient.update({
+      where: { id },
+      data: formData,
+    });
+    
+    return { 
+      success: true, 
+      message: "Patient updated successfully",
+      patient: updatedPatient 
+    };
+  } catch (error) {
+    if (error.code === 'P2002') {
+      return { success: false, error: "Phone number already exists" };
+    }
+    return { success: false, error: "Failed to update patient" };
+  }
+};
+
 const deletePatient = async (id) => {
   try {
     let patient = await prisma.patient.findUnique({
@@ -77,5 +105,6 @@ module.exports = {
   getAllPatients,
   getPatientById,
   insertPatient,
+  updatePatient,
   deletePatient,
 };
