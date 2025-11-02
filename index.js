@@ -19,10 +19,15 @@ app.use("/patients", patientsRoutes);
 app.use("/admin", adminRoutes);
 app.use("/visits", visitRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// Only start server in local development (not on Vercel)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
 
+// Export for Vercel
+module.exports = app;
 
 //step1 : npm i @prisma/client
 //step2 : npm i prisma -D
